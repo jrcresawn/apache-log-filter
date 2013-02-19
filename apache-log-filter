@@ -1,0 +1,27 @@
+#!/bin/bash
+
+while getopts "q:y:" opt; do
+  case $opt in
+    q)
+      q=$OPTARG
+      ;;
+    y)
+      y=$OPTARG
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG"
+      ;;
+  esac
+done
+
+declare -a quarter=(
+    ''
+    '(Jan|Feb|Mar)'
+    '(Apr|May|Jun)'
+    '(Jul|Aug|Sep)'
+    '(Oct|Nov|Dec)'
+)
+
+for i in access_log error_log ssl_request_log; do
+    egrep "[0-9][0-9]/${quarter[$q]}/$y" $i | grep -i azmet > ${y}Q${q}.$i
+done
